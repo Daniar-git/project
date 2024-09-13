@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         exclude_fields = kwargs.pop('exclude_fields', None)
         super(UserSerializer, self).__init__(*args, **kwargs)
         if self.context and 'view' in self.context and self.context['view'].__class__.__name__ == 'UsersView':
-            exclude_fields = ['subscription', 'avatar', 'file']
+            exclude_fields = ['file']
         if exclude_fields:
             for field_name in exclude_fields:
                 self.fields.pop(field_name)
@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('id', 'last_login', 'first_name', 'last_name', 'email', 'date_joined', 'birthdate',
-                  'gender', 'file', 'phone', 'activated_date', 'birthplace', 'address')
+                  'gender', 'file', 'phone', 'activated_date', 'birthplace', 'address', 'username')
         model = User
 
 
@@ -34,7 +34,7 @@ class UserRegistrationSerializer(RegisterSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields.pop('username', None)
+        self.fields.pop('email', None)
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -86,33 +86,3 @@ class ResetPasswordSerializer(PasswordResetSerializer):
         opts.update(self.get_email_options())
         site = Site.objects.get(pk=settings.SITE_ID_FRONTEND)
         self.reset_form.save(**opts, domain_override=urlparse(request.META.get('HTTP_REFERER', site.domain)).netloc)
-
-
-class CustomLoginSerializer(LoginSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields.pop('username', None)
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
-        user = self.get_auth_user(None, email, password)  # Pass None for username
-
-        if not user:
-            msg = _('Unable to log in with provided credentials.')
-            raise exceptions.ValidationError(msg)
-
-        self.validate_auth_user_status(user)
-
-        if 'dj_rest_auth.registration' in settings.INSTALLED_APPS:
-            self.validate_email_verification_status(user)
-
-        attrs['user'] = user
-        return attrs
-
-    def authenticate(self, **kwargs):
-        request = self.context.get('request')
-        if request is not None:
-            return authenticate(request, **kwargs)
-        else:
-            return authenticate(**kwargs)

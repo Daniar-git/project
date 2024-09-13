@@ -15,7 +15,6 @@ docker rmi $(docker images -a -q)
 docker-compose run web python3 manage.py makemigrations
 docker-compose run web python3 manage.py migrate
 docker-compose run web python3 manage.py createsuperuser
-docker-compose build --no-cache
 docker-compose up
 ```
 
@@ -26,3 +25,14 @@ DB_USER=postgres
 DB_HOST=db
 SECRET_KEY=django-insecure-rpt591+wff3e&(q&zp=m^0kd1&)@d55e-1uv1=s9kztc4mu3b+
 ```
+
+
+### tests
+```bash
+docker-compose run web python3 manage.py test project.user.tests
+docker-compose run web python3 manage.py test project.main.tests
+```
+
+
+### Swagger
+http://localhost/swagger/

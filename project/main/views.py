@@ -3,13 +3,10 @@ from .serializers import TodoSerializer
 from .filters import TodoFilter
 from ..common.permissions import TodoPermission
 
-from django.shortcuts import render
 from rest_framework import filters, generics, status
 from rest_framework.permissions import IsAuthenticated
 
 
-def custom_filter(queryset, filterset_class):
-    pass
 
 
 class TodosView(generics.ListCreateAPIView):

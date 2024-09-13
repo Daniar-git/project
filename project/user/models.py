@@ -39,13 +39,3 @@ class User(AbstractUser):
         verbose_name = _('User')
         verbose_name_plural = _('Users')
 
-
-class Note(Base):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("user"))
-    note = models.CharField(max_length=255, verbose_name=_("note"), blank=False, null=False)
-
-
-class Blog(Base):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("user"))
-    name = models.CharField(max_length=255, verbose_name=_("blog name"), blank=False, null=False)
-    notes = models.ManyToManyField(Note, verbose_name=_("notes"))

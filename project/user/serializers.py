@@ -9,7 +9,7 @@ from dj_rest_auth.serializers import PasswordResetSerializer, LoginSerializer
 from rest_framework import serializers, exceptions
 from dj_rest_auth.models import TokenModel
 
-from .models import User, Note, Blog
+from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -116,22 +116,3 @@ class CustomLoginSerializer(LoginSerializer):
             return authenticate(request, **kwargs)
         else:
             return authenticate(**kwargs)
-
-
-class NoteSerializer(serializers.ModelSerializer):
-    nested_field = serializers.SerializerMethodField()
-
-
-    def get_nested_field(self, obj):
-        return f"Hello!"
-
-
-    class Meta:
-        model = Note
-        fields = '__all__'
-
-
-class BlogSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Blog
-        fields = '__all__'

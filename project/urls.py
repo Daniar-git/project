@@ -27,6 +27,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('api/', include('project.user.urls')),
+    path('api/main/', include('project.main.urls')),
     path('api/', include('dj_rest_auth.urls')),
     path('api/registration/', include('dj_rest_auth.registration.urls')),
 )
